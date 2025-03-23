@@ -1,479 +1,213 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { FileSpreadsheet, FileIcon as FilePdf, Calendar, Download, Eye } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CalendarIcon, Download, FileSpreadsheet, FileText, Printer } from "lucide-react"
 
-export default function ReportGenerator() {
+export function ReportGenerator() {
   return (
-    <Card className="mt-4">
+    <Card>
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <CardTitle>Report Generator</CardTitle>
-            <CardDescription>Generate and export exam schedules and surveillance assignments</CardDescription>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              Preview
-            </Button>
-            <Button size="sm" className="flex items-center gap-1">
-              <Download className="h-4 w-4" />
-              Generate Report
-            </Button>
-          </div>
-        </div>
+        <CardTitle>Report Generator</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="exam-schedule" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="exam-schedule">Exam Schedule</TabsTrigger>
-            <TabsTrigger value="surveillance">Surveillance Assignments</TabsTrigger>
-            <TabsTrigger value="professor">Professor Schedule</TabsTrigger>
+        <Tabs defaultValue="exams">
+          <TabsList className="mb-4">
+            <TabsTrigger value="exams">Exam Reports</TabsTrigger>
+            <TabsTrigger value="surveillance">Surveillance Reports</TabsTrigger>
+            <TabsTrigger value="statistics">Statistics</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="exam-schedule">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-4 md:col-span-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="program">Program</Label>
-                    <Select defaultValue="all">
-                      <SelectTrigger id="program">
-                        <SelectValue placeholder="Select program" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Programs</SelectItem>
-                        <SelectItem value="l1">L1 - Bachelor</SelectItem>
-                        <SelectItem value="m1">M1 - Master</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="date-range">Date Range</Label>
-                    <Select defaultValue="june">
-                      <SelectTrigger id="date-range">
-                        <SelectValue placeholder="Select date range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="june">June 2025</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Include Information</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="rooms" defaultChecked />
-                      <label
-                        htmlFor="rooms"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Room Details
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="professors" defaultChecked />
-                      <label
-                        htmlFor="professors"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Assigned Professors
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="students" />
-                      <label
-                        htmlFor="students"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Student Count
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="notes" />
-                      <label
-                        htmlFor="notes"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Special Notes
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Export Format</Label>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="pdf" defaultChecked />
-                      <label
-                        htmlFor="pdf"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <FilePdf className="h-4 w-4 text-red-500" />
-                        PDF
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="excel" />
-                      <label
-                        htmlFor="excel"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <FileSpreadsheet className="h-4 w-4 text-green-600" />
-                        Excel
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="calendar" />
-                      <label
-                        htmlFor="calendar"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <Calendar className="h-4 w-4 text-blue-500" />
-                        iCal
-                      </label>
-                    </div>
-                  </div>
-                </div>
+          <TabsContent value="exams">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <Label htmlFor="report-type">Report Type</Label>
+                <Select defaultValue="all-exams">
+                  <SelectTrigger id="report-type">
+                    <SelectValue placeholder="Select report type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all-exams">All Exams</SelectItem>
+                    <SelectItem value="by-program">Exams by Program</SelectItem>
+                    <SelectItem value="by-date">Exams by Date</SelectItem>
+                    <SelectItem value="by-room">Exams by Room</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="border rounded-md p-4 bg-muted/50">
-                <h3 className="font-medium mb-2">Report Preview</h3>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>Type:</strong> Exam Schedule
-                  </p>
-                  <p>
-                    <strong>Programs:</strong> All Programs
-                  </p>
-                  <p>
-                    <strong>Date Range:</strong> June 2025
-                  </p>
-                  <p>
-                    <strong>Includes:</strong> Room Details, Assigned Professors
-                  </p>
-                  <p>
-                    <strong>Format:</strong> PDF
-                  </p>
-                  <div className="mt-4">
-                    <p className="text-muted-foreground text-xs">
-                      This report will include all exams scheduled in June 2025 with their room details and assigned
-                      professors.
-                    </p>
-                  </div>
+              <div>
+                <Label htmlFor="date-range">Date Range</Label>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  Select date range
+                </Button>
+              </div>
+
+              <div>
+                <Label htmlFor="format">Export Format</Label>
+                <Select defaultValue="pdf">
+                  <SelectTrigger id="format">
+                    <SelectValue placeholder="Select format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pdf">PDF Document</SelectItem>
+                    <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                    <SelectItem value="csv">CSV File</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <h3 className="text-sm font-medium">Include Fields</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="module" defaultChecked />
+                  <Label htmlFor="module">Module Name</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="program" defaultChecked />
+                  <Label htmlFor="program">Program</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="date" defaultChecked />
+                  <Label htmlFor="date">Date & Time</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="room" defaultChecked />
+                  <Label htmlFor="room">Room</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="main" defaultChecked />
+                  <Label htmlFor="main">Main Invigilator</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="assistant" defaultChecked />
+                  <Label htmlFor="assistant">Assistant</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="duration" defaultChecked />
+                  <Label htmlFor="duration">Duration</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="students" />
+                  <Label htmlFor="students">Student Count</Label>
                 </div>
               </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline">
+                <Printer className="mr-2 h-4 w-4" />
+                Print
+              </Button>
+              <Button variant="outline">
+                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                Export to Excel
+              </Button>
+              <Button>
+                <FileText className="mr-2 h-4 w-4" />
+                Generate PDF
+              </Button>
             </div>
           </TabsContent>
 
           <TabsContent value="surveillance">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-4 md:col-span-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="department">Department</Label>
-                    <Select defaultValue="all">
-                      <SelectTrigger id="department">
-                        <SelectValue placeholder="Select department" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Departments</SelectItem>
-                        <SelectItem value="cs">Computer Science</SelectItem>
-                        <SelectItem value="is">Information Systems</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="date-range-surv">Date Range</Label>
-                    <Select defaultValue="june">
-                      <SelectTrigger id="date-range-surv">
-                        <SelectValue placeholder="Select date range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="june">June 2025</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Group By</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="by-professor" defaultChecked />
-                      <label
-                        htmlFor="by-professor"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Professor
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="by-date" />
-                      <label
-                        htmlFor="by-date"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Date
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="by-role" />
-                      <label
-                        htmlFor="by-role"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Role (Main/Assistant)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Include Information</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="contact" defaultChecked />
-                      <label
-                        htmlFor="contact"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Contact Information
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="department-info" defaultChecked />
-                      <label
-                        htmlFor="department-info"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Department
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="workload" />
-                      <label
-                        htmlFor="workload"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Workload Summary
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Export Format</Label>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="pdf-surv" defaultChecked />
-                      <label
-                        htmlFor="pdf-surv"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <FilePdf className="h-4 w-4 text-red-500" />
-                        PDF
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="excel-surv" />
-                      <label
-                        htmlFor="excel-surv"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <FileSpreadsheet className="h-4 w-4 text-green-600" />
-                        Excel
-                      </label>
-                    </div>
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <Label htmlFor="professor-report">Professor</Label>
+                <Select>
+                  <SelectTrigger id="professor-report">
+                    <SelectValue placeholder="All Professors" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Professors</SelectItem>
+                    <SelectItem value="dr-smith">Dr. Smith</SelectItem>
+                    <SelectItem value="dr-williams">Dr. Williams</SelectItem>
+                    <SelectItem value="dr-johnson">Dr. Johnson</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="border rounded-md p-4 bg-muted/50">
-                <h3 className="font-medium mb-2">Report Preview</h3>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>Type:</strong> Surveillance Assignments
-                  </p>
-                  <p>
-                    <strong>Department:</strong> All Departments
-                  </p>
-                  <p>
-                    <strong>Date Range:</strong> June 2025
-                  </p>
-                  <p>
-                    <strong>Group By:</strong> Professor
-                  </p>
-                  <p>
-                    <strong>Includes:</strong> Contact Information, Department
-                  </p>
-                  <p>
-                    <strong>Format:</strong> PDF
-                  </p>
-                  <div className="mt-4">
-                    <p className="text-muted-foreground text-xs">
-                      This report will list all professors and their surveillance assignments for June 2025, including
-                      their contact information and department.
-                    </p>
-                  </div>
-                </div>
+              <div>
+                <Label htmlFor="department-report">Department</Label>
+                <Select>
+                  <SelectTrigger id="department-report">
+                    <SelectValue placeholder="All Departments" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="cs">Computer Science</SelectItem>
+                    <SelectItem value="se">Software Engineering</SelectItem>
+                    <SelectItem value="networks">Networks</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
+              <div>
+                <Label htmlFor="format-surveillance">Export Format</Label>
+                <Select defaultValue="pdf">
+                  <SelectTrigger id="format-surveillance">
+                    <SelectValue placeholder="Select format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pdf">PDF Document</SelectItem>
+                    <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                    <SelectItem value="csv">CSV File</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline">
+                <Printer className="mr-2 h-4 w-4" />
+                Print
+              </Button>
+              <Button>
+                <Download className="mr-2 h-4 w-4" />
+                Generate Report
+              </Button>
             </div>
           </TabsContent>
 
-          <TabsContent value="professor">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-4 md:col-span-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="professor">Professor</Label>
-                    <Select>
-                      <SelectTrigger id="professor">
-                        <SelectValue placeholder="Select professor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Professors</SelectItem>
-                        <SelectItem value="smith">Dr. Smith</SelectItem>
-                        <SelectItem value="johnson">Dr. Johnson</SelectItem>
-                        <SelectItem value="williams">Dr. Williams</SelectItem>
-                        <SelectItem value="brown">Dr. Brown</SelectItem>
-                      </SelectContent>
-                    </Select>
+          <TabsContent value="statistics">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Surveillance Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px] flex items-center justify-center bg-muted rounded-md">
+                    [Bar Chart Visualization]
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="date-range-prof">Date Range</Label>
-                    <Select defaultValue="june">
-                      <SelectTrigger id="date-range-prof">
-                        <SelectValue placeholder="Select date range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="june">June 2025</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                <div className="space-y-2">
-                  <Label>Include Information</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="exam-details" defaultChecked />
-                      <label
-                        htmlFor="exam-details"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Exam Details
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="room-info" defaultChecked />
-                      <label
-                        htmlFor="room-info"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Room Information
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="role-info" defaultChecked />
-                      <label
-                        htmlFor="role-info"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Role (Main/Assistant)
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="calendar-view" />
-                      <label
-                        htmlFor="calendar-view"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Calendar View
-                      </label>
-                    </div>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Exam Room Utilization</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px] flex items-center justify-center bg-muted rounded-md">
+                    [Pie Chart Visualization]
                   </div>
-                </div>
+                </CardContent>
+              </Card>
+            </div>
 
-                <div className="space-y-2">
-                  <Label>Email Options</Label>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="send-email" />
-                    <label
-                      htmlFor="send-email"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Send schedule to professors via email
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Export Format</Label>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="pdf-prof" defaultChecked />
-                      <label
-                        htmlFor="pdf-prof"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <FilePdf className="h-4 w-4 text-red-500" />
-                        PDF
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="calendar-prof" />
-                      <label
-                        htmlFor="calendar-prof"
-                        className="text-sm font-medium leading-none flex items-center gap-1 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        <Calendar className="h-4 w-4 text-blue-500" />
-                        iCal
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border rounded-md p-4 bg-muted/50">
-                <h3 className="font-medium mb-2">Report Preview</h3>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>Type:</strong> Professor Schedule
-                  </p>
-                  <p>
-                    <strong>Professor:</strong> All Professors
-                  </p>
-                  <p>
-                    <strong>Date Range:</strong> June 2025
-                  </p>
-                  <p>
-                    <strong>Includes:</strong> Exam Details, Room Information, Role
-                  </p>
-                  <p>
-                    <strong>Email:</strong> No
-                  </p>
-                  <p>
-                    <strong>Format:</strong> PDF
-                  </p>
-                  <div className="mt-4">
-                    <p className="text-muted-foreground text-xs">
-                      This report will generate individual schedules for all professors showing their exam surveillance
-                      duties for June 2025.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline">
+                <Printer className="mr-2 h-4 w-4" />
+                Print
+              </Button>
+              <Button>
+                <Download className="mr-2 h-4 w-4" />
+                Export Statistics
+              </Button>
             </div>
           </TabsContent>
         </Tabs>

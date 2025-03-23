@@ -1,45 +1,32 @@
 "use client"
-
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import {
-  CalendarDays,
-  FileSpreadsheet,
-  FilePlus,
-  Users,
-  BookOpen,
-  School,
-  Clock,
-  Building2,
-  AlertTriangle,
-} from "lucide-react"
-import ExamSessionPlanner from "./exam-session-planner"
-import SurveillanceAssignmentBoard from "./surveillance-assignment-board"
-import ReportGenerator from "./report-generator"
+import { CalendarIcon, FileText, FolderPlus, LayoutGrid, TimerIcon, Users } from "lucide-react"
+import { ExamCalendar } from "@/components/exam-calendar"
+import { ExamSessionPlanner } from "@/components/exam-session-planner"
+import { SurveillanceAssignments } from "@/components/surveillance-assignments"
+import { ReportGenerator } from "@/components/report-generator"
 
-export default function AdminDashboard() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-
+export function AdminDashboard() {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              Professors
-            </CardTitle>
-            <CardDescription>Manage professor profiles</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-2xl font-bold">42</p>
-                <p className="text-sm text-muted-foreground">Total professors</p>
+          <CardContent className="pt-6">
+            <div className="flex items-start">
+              <div className="mr-4 bg-blue-100 p-2 rounded-lg">
+                <Users className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Professors</h3>
+                <p className="text-sm text-muted-foreground">Manage professor profiles</p>
+                <div className="mt-2">
+                  <span className="text-3xl font-bold">42</span>
+                  <p className="text-sm text-muted-foreground">Total professors</p>
+                </div>
               </div>
               <Button variant="outline" size="sm">
                 Manage
@@ -49,18 +36,18 @@ export default function AdminDashboard() {
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-blue-600" />
-              Modules
-            </CardTitle>
-            <CardDescription>Academic modules</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-2xl font-bold">87</p>
-                <p className="text-sm text-muted-foreground">Active modules</p>
+          <CardContent className="pt-6">
+            <div className="flex items-start">
+              <div className="mr-4 bg-blue-100 p-2 rounded-lg">
+                <LayoutGrid className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Modules</h3>
+                <p className="text-sm text-muted-foreground">Academic modules</p>
+                <div className="mt-2">
+                  <span className="text-3xl font-bold">87</span>
+                  <p className="text-sm text-muted-foreground">Active modules</p>
+                </div>
               </div>
               <Button variant="outline" size="sm">
                 Manage
@@ -70,21 +57,21 @@ export default function AdminDashboard() {
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-blue-600" />
-              Upcoming Exams
-            </CardTitle>
-            <CardDescription>Next 7 days</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-2xl font-bold">12</p>
-                <p className="text-sm text-muted-foreground">Scheduled exams</p>
+          <CardContent className="pt-6">
+            <div className="flex items-start">
+              <div className="mr-4 bg-blue-100 p-2 rounded-lg">
+                <CalendarIcon className="h-6 w-6 text-blue-600" />
               </div>
-              <Badge variant="destructive" className="flex gap-1 items-center">
-                <AlertTriangle className="h-3 w-3" />3 Unassigned
+              <div className="flex-1">
+                <h3 className="font-medium">Upcoming Exams</h3>
+                <p className="text-sm text-muted-foreground">Next 7 days</p>
+                <div className="mt-2">
+                  <span className="text-3xl font-bold">12</span>
+                  <p className="text-sm text-muted-foreground">Scheduled exams</p>
+                </div>
+              </div>
+              <Badge variant="destructive" className="ml-auto">
+                3 Unassigned
               </Badge>
             </div>
           </CardContent>
@@ -94,83 +81,49 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="md:col-span-1">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Quick Actions</CardTitle>
+            <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full justify-start" variant="outline">
-              <FilePlus className="mr-2 h-4 w-4" />
-              Create Exam Session
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="#">
+                <FileText className="mr-2 h-4 w-4" />
+                Create Exam Session
+              </Link>
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <School className="mr-2 h-4 w-4" />
-              Add Academic Program
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="#">
+                <FolderPlus className="mr-2 h-4 w-4" />
+                Add Academic Program
+              </Link>
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Building2 className="mr-2 h-4 w-4" />
-              Manage Rooms
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="#">
+                <LayoutGrid className="mr-2 h-4 w-4" />
+                Manage Rooms
+              </Link>
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Clock className="mr-2 h-4 w-4" />
-              Set Exam Periods
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="#">
+                <TimerIcon className="mr-2 h-4 w-4" />
+                Set Exam Periods
+              </Link>
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Import Data
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="#">
+                <FileText className="mr-2 h-4 w-4" />
+                Import Data
+              </Link>
             </Button>
           </CardContent>
         </Card>
 
         <Card className="md:col-span-3">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Exam Calendar</CardTitle>
+            <CardTitle>Exam Calendar</CardTitle>
             <CardDescription>Overview of scheduled exams</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col md:flex-row gap-6">
-              <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
-              <div className="flex-1">
-                <h3 className="font-medium mb-2">Exams on {date?.toLocaleDateString()}</h3>
-                <div className="space-y-2">
-                  <div className="p-2 border rounded-md bg-blue-50 border-blue-200">
-                    <div className="flex justify-between">
-                      <p className="font-medium">Database Systems</p>
-                      <Badge>L1</Badge>
-                    </div>
-                    <div className="text-sm text-muted-foreground flex justify-between mt-1">
-                      <span>09:00 - 11:00</span>
-                      <span>Room A104</span>
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="text-blue-700 bg-blue-50">
-                        Main: Dr. Smith
-                      </Badge>
-                      <Badge variant="outline" className="text-green-700 bg-green-50">
-                        Assistant: Dr. Johnson
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-2 border rounded-md bg-amber-50 border-amber-200">
-                    <div className="flex justify-between">
-                      <p className="font-medium">Software Engineering</p>
-                      <Badge>M1</Badge>
-                    </div>
-                    <div className="text-sm text-muted-foreground flex justify-between mt-1">
-                      <span>14:00 - 16:00</span>
-                      <span>Room B201</span>
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="text-blue-700 bg-blue-50">
-                        Main: Dr. Williams
-                      </Badge>
-                      <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100">
-                        Assistant: Unassigned
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ExamCalendar />
           </CardContent>
         </Card>
       </div>
@@ -185,7 +138,7 @@ export default function AdminDashboard() {
           <ExamSessionPlanner />
         </TabsContent>
         <TabsContent value="assignments">
-          <SurveillanceAssignmentBoard />
+          <SurveillanceAssignments />
         </TabsContent>
         <TabsContent value="reports">
           <ReportGenerator />
