@@ -15,6 +15,14 @@ import ActiveUsersList from "@/components/active-users-list"
 export default function AdminDashboard() {
   const [date, setDate] = useState<Date | undefined>(new Date())
 
+  // Create a wrapper function for the Calendar's onSelect prop
+  const handleDateSelect = (selectedDate: Date | Date[] | { from: Date; to: Date } | undefined) => {
+    // Since we're using mode="single", we know it will be a Date or undefined
+    if (selectedDate instanceof Date || selectedDate === undefined) {
+      setDate(selectedDate)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -140,7 +148,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col md:flex-row gap-6">
-              <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
+              <Calendar mode="single" selected={date} onSelect={handleDateSelect} className="rounded-md border" />
               <div className="flex-1">
                 <h3 className="font-medium mb-2">Exams on {date?.toLocaleDateString()}</h3>
                 <div className="space-y-2">

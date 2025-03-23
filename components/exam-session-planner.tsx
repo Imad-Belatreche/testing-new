@@ -15,6 +15,14 @@ import { format } from "date-fns"
 export default function ExamSessionPlanner() {
   const [date, setDate] = useState<Date>()
 
+  // Create a wrapper function for the Calendar's onSelect prop
+  const handleDateSelect = (selectedDate: Date | Date[] | { from: Date; to: Date } | undefined) => {
+    // Since we're using mode="single", we know it will be a Date or undefined
+    if (selectedDate instanceof Date || selectedDate === undefined) {
+      setDate(selectedDate)
+    }
+  }
+
   return (
     <Card className="mt-4">
       <CardHeader>
@@ -68,7 +76,7 @@ export default function ExamSessionPlanner() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                  <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
                 </PopoverContent>
               </Popover>
             </div>

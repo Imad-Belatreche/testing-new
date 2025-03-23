@@ -20,6 +20,14 @@ export default function CreateExam() {
   const [date, setDate] = useState<Date>()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Create a wrapper function for the Calendar's onSelect prop
+  const handleDateSelect = (selectedDate: Date | Date[] | { from: Date; to: Date } | undefined) => {
+    // Since we're using mode="single", we know it will be a Date or undefined
+    if (selectedDate instanceof Date || selectedDate === undefined) {
+      setDate(selectedDate)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -88,7 +96,7 @@ export default function CreateExam() {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                    <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
                   </PopoverContent>
                 </Popover>
               </div>
