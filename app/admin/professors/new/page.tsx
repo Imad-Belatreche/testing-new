@@ -49,7 +49,7 @@ export default function AddProfessor() {
             <Card>
               <CardHeader>
                 <CardTitle>Personal Details</CardTitle>
-                <CardDescription>Enter the professor's personal information and contact details.</CardDescription>
+                <CardDescription>Enter the professor&apos;s personal information and contact details.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,7 +119,7 @@ export default function AddProfessor() {
             <Card>
               <CardHeader>
                 <CardTitle>Account Settings</CardTitle>
-                <CardDescription>Set up the professor's account credentials and status.</CardDescription>
+                <CardDescription>Set up the professor&apos;s account credentials and status.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,7 +183,7 @@ export default function AddProfessor() {
             <Card>
               <CardHeader>
                 <CardTitle>Permissions</CardTitle>
-                <CardDescription>Set the professor's role and system permissions.</CardDescription>
+                <CardDescription>Set the professor&apos;s role and system permissions.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">

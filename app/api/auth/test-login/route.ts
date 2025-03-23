@@ -1,6 +1,9 @@
 import { getRow } from "@/lib/db"
 import { comparePassword, generateToken, setAuthCookie } from "@/lib/auth"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export async function POST(request: Request) {
   try {
     console.log("Test Login API called")

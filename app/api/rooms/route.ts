@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { query } from "@/lib/db"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export async function GET() {
   try {
     const rooms = await query(`

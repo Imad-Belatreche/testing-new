@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { clearAuthCookie } from "@/lib/auth"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export async function POST() {
   try {
     // Clear auth cookie

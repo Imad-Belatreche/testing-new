@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export async function GET() {
   return NextResponse.json({
     status: "ok",

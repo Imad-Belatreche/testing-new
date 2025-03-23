@@ -2,6 +2,9 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { verifyToken } from "./lib/auth"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export function middleware(request: NextRequest) {
   // Get the pathname of the request
   const path = request.nextUrl.pathname

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { checkDatabaseConnection } from "@/lib/check-db-connection"
 
+// Add this to disable Edge Runtime
+export const runtime = "nodejs"
+
 export async function GET() {
   try {
     const isConnected = await checkDatabaseConnection()
