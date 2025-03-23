@@ -3,28 +3,25 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function TestLoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("john.smith@university.edu")
-  const [password, setPassword] = useState("admin123")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [response, setResponse] = useState<any>(null)
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
+    setLoading(true)
+    setError(null)
     setResponse(null)
-    setIsLoading(true)
 
     try {
-      const response = await fetch("/api/auth/test-login", {
+      const res = await fetch("/api/auth/test-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,75 +29,97 @@ export default function TestLoginPage() {
         body: JSON.stringify({ email, password }),
       })
 
-      const responseText = await response.text()
+      const responseText = await res.text()
+      console.log("Raw response:", responseText)
+
+      let data
+      try {
+        data = JSON.parse(responseText)
+      } catch (e) {
+        setError(
+          `Server returned non-JSON response: ${responseText.substring(0, 200)}${responseText.length > 200 ? "..." : ""}`,
+        )
+        setLoading(false)
+        return
+      }
+
       setResponse({
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-        body: responseText,
+        status: res.status,
+        statusText: res.statusText,
+        headers: Object.fromEntries(res.headers.entries()),
+        data,
       })
 
-      try {
-        const data = JSON.parse(responseText)
-        if (!response.ok) {
-          setError(data.error || "Login failed")
-        } else {
-          // Don't redirect, just show success
-          setError("")
-        }
-      } catch (parseError) {
-        setError(`Failed to parse response as JSON: ${responseText.substring(0, 100)}...`)
+      if (!res.ok) {
+        setError(data.error || `Error: ${res.status} ${res.statusText}`)
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred during login")
+    } catch (err) {
+      setError(`Fetch error: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Test Login Page</CardTitle>
+          <CardTitle className="text-center">Test Login API</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleLogin} className="space-y-4">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="john.smith@university.edu"
+                required
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="admin123"
                 required
               />
             </div>
-            {error && <div className="p-3 text-sm bg-red-50 text-red-600 rounded-md">{error}</div>}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Testing..." : "Test Login"}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Testing..." : "Test Login"}
             </Button>
           </form>
 
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+
           {response && (
-            <div className="mt-8 space-y-4">
-              <h3 className="text-lg font-medium">API Response:</h3>
-              <div className="p-4 bg-gray-100 rounded-md overflow-auto">
-                <p>
+            <div className="mt-4">
+              <h3 className="font-medium mb-2">Response:</h3>
+              <div className="bg-gray-50 p-3 rounded-md overflow-auto max-h-60 text-sm font-mono">
+                <div>
                   <strong>Status:</strong> {response.status} {response.statusText}
-                </p>
-                <p>
+                </div>
+                <div className="mt-2">
                   <strong>Headers:</strong>
-                </p>
+                </div>
                 <pre className="text-xs mt-1">{JSON.stringify(response.headers, null, 2)}</pre>
-                <p className="mt-2">
+                <div className="mt-2">
                   <strong>Body:</strong>
-                </p>
-                <pre className="text-xs mt-1 whitespace-pre-wrap">{response.body}</pre>
+                </div>
+                <pre className="text-xs mt-1">{JSON.stringify(response.data, null, 2)}</pre>
               </div>
             </div>
           )}

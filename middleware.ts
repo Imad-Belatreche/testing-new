@@ -3,46 +3,58 @@ import type { NextRequest } from "next/server"
 import { verifyToken } from "./lib/auth"
 
 export function middleware(request: NextRequest) {
-  // Get token from cookie
-  const token = request.cookies.get("auth_token")?.value
+  // Get the pathname of the request
+  const path = request.nextUrl.pathname
 
-  // Get the pathname
-  const { pathname } = request.nextUrl
+  // Define public paths that don't require authentication
+  const isPublicPath = path === "/"
 
-  // Check if the path is protected
-  const isProtectedRoute = pathname.startsWith("/admin") || pathname.startsWith("/professor")
+  // Get the token from the cookies
+  const token = request.cookies.get("auth_token")?.value || ""
 
-  // If it's a protected route and no token exists, redirect to login
-  if (isProtectedRoute && !token) {
+  // Verify the token and get the user role
+  const decodedToken = token ? verifyToken(token) : null
+  const userRole = decodedToken?.role || null
+
+  // If the path is public and the user is logged in, redirect to the appropriate dashboard
+  if (isPublicPath && decodedToken) {
+    return NextResponse.redirect(
+      new URL(userRole === "admin" ? "/admin/dashboard" : "/professor/dashboard", request.url),
+    )
+  }
+
+  // If the path is not public and the user is not logged in, redirect to the login page
+  if (!isPublicPath && !decodedToken) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  // If token exists, verify it
-  if (token) {
-    const decoded = verifyToken(token)
-
-    // If token is invalid, redirect to login
-    if (!decoded) {
-      const response = NextResponse.redirect(new URL("/", request.url))
-      response.cookies.delete("auth_token")
-      return response
-    }
-
-    // Check role-based access
-    if (pathname.startsWith("/admin") && decoded.role !== "admin") {
-      return NextResponse.redirect(new URL("/professor/dashboard", request.url))
-    }
-
-    if (pathname.startsWith("/professor") && decoded.role !== "professor") {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url))
-    }
+  // If the path is for admin routes and the user is not an admin, redirect to the professor dashboard
+  if (path.startsWith("/admin") && userRole !== "admin") {
+    return NextResponse.redirect(new URL("/professor/dashboard", request.url))
   }
 
+  // If the path is for professor routes and the user is not a professor, redirect to the admin dashboard
+  if (path.startsWith("/professor") && userRole !== "professor") {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url))
+  }
+
+  // Continue with the request
   return NextResponse.next()
 }
 
-// Specify which routes this middleware should run on
+// Configure the middleware to run on specific paths
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|public).*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next
+     * - public (static files)
+     * - favicon.ico (browser icon)
+     */
+    "/",
+    "/admin/:path*",
+    "/professor/:path*",
+  ],
 }
 
