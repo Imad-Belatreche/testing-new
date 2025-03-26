@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
+  BookOpen,
+  Building,
   Calendar,
   GraduationCap,
   LayoutDashboard,
@@ -67,7 +69,43 @@ export function AdminSidebar() {
               </Link>
             </Button>
 
+            <Button
+              asChild
+              variant={isActive("/admin/surveillance") ? "default" : "ghost"}
+              className={isActive("/admin/surveillance") ? "bg-primary-usthb hover:bg-primary-usthb/90" : ""}
+              size="sm"
+            >
+              <Link href="/admin/surveillance">
+                <Users className="mr-2 h-4 w-4" />
+                Surveillance
+              </Link>
+            </Button>
+
             <h3 className="text-sm font-medium mt-4 mb-2">Academic Resources</h3>
+
+            <Button
+              asChild
+              variant={isActive("/admin/departments") ? "default" : "ghost"}
+              className={isActive("/admin/departments") ? "bg-primary-usthb hover:bg-primary-usthb/90" : ""}
+              size="sm"
+            >
+              <Link href="/admin/departments">
+                <Building className="mr-2 h-4 w-4" />
+                Departments
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant={isActive("/admin/formations") ? "default" : "ghost"}
+              className={isActive("/admin/formations") ? "bg-primary-usthb hover:bg-primary-usthb/90" : ""}
+              size="sm"
+            >
+              <Link href="/admin/formations">
+                <School className="mr-2 h-4 w-4" />
+                Formations
+              </Link>
+            </Button>
 
             <Button
               asChild
@@ -88,8 +126,20 @@ export function AdminSidebar() {
               size="sm"
             >
               <Link href="/admin/modules">
-                <ListChecks className="mr-2 h-4 w-4" />
+                <BookOpen className="mr-2 h-4 w-4" />
                 Modules
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant={isActive("/admin/teaching-assignments") ? "default" : "ghost"}
+              className={isActive("/admin/teaching-assignments") ? "bg-primary-usthb hover:bg-primary-usthb/90" : ""}
+              size="sm"
+            >
+              <Link href="/admin/teaching-assignments">
+                <ListChecks className="mr-2 h-4 w-4" />
+                Teaching Assignments
               </Link>
             </Button>
 
@@ -102,18 +152,6 @@ export function AdminSidebar() {
               <Link href="/admin/rooms">
                 <LayoutGrid className="mr-2 h-4 w-4" />
                 Rooms
-              </Link>
-            </Button>
-
-            <Button
-              asChild
-              variant={isActive("/admin/programs") ? "default" : "ghost"}
-              className={isActive("/admin/programs") ? "bg-primary-usthb hover:bg-primary-usthb/90" : ""}
-              size="sm"
-            >
-              <Link href="/admin/programs">
-                <School className="mr-2 h-4 w-4" />
-                Academic Programs
               </Link>
             </Button>
 
