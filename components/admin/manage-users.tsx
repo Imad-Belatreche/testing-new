@@ -28,11 +28,13 @@ import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Edit, Filter, Key, MoreHorizontal, Search, Shield, Trash2, UserPlus } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function ManageUsers() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRole, setSelectedRole] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const [createUserType, setCreateUserType] = useState<"new" | "professor">("new")
 
   // Mock users data
   const users = [
@@ -40,7 +42,8 @@ export function ManageUsers() {
       id: "1",
       name: "Admin User",
       email: "admin@usthb.edu",
-      role: "Admin",
+      role: "admin",
+      linkedProfessor: null,
       department: "Administration",
       status: "Active",
       lastLogin: "Today, 10:30 AM",
@@ -50,7 +53,8 @@ export function ManageUsers() {
       id: "2",
       name: "Dr. John Smith",
       email: "john.smith@usthb.edu",
-      role: "Professor",
+      role: "professor",
+      linkedProfessor: "Dr. John Smith",
       department: "Computer Science",
       status: "Active",
       lastLogin: "Yesterday, 3:45 PM",
@@ -60,7 +64,8 @@ export function ManageUsers() {
       id: "3",
       name: "Dr. Sarah Williams",
       email: "sarah.williams@usthb.edu",
-      role: "Professor",
+      role: "both",
+      linkedProfessor: "Dr. Sarah Williams",
       department: "Software Engineering",
       status: "Active",
       lastLogin: "Today, 9:15 AM",
@@ -70,7 +75,8 @@ export function ManageUsers() {
       id: "4",
       name: "Dr. Michael Johnson",
       email: "michael.johnson@usthb.edu",
-      role: "Professor",
+      role: "professor",
+      linkedProfessor: "Dr. Michael Johnson",
       department: "Computer Science",
       status: "Inactive",
       lastLogin: "2 weeks ago",
@@ -78,13 +84,32 @@ export function ManageUsers() {
     },
     {
       id: "5",
-      name: "Dr. Emily Brown",
-      email: "emily.brown@usthb.edu",
-      role: "Professor",
-      department: "Networks",
+      name: "System Administrator",
+      email: "sysadmin@usthb.edu",
+      role: "admin",
+      linkedProfessor: null,
+      department: "IT Department",
       status: "Active",
       lastLogin: "Today, 11:20 AM",
       avatar: "/placeholder.svg?height=40&width=40",
+    },
+  ]
+
+  // Mock professors without user accounts
+  const professorsWithoutAccounts = [
+    {
+      id: "1",
+      name: "Dr. Emily Brown",
+      email: "emily.brown@usthb.edu",
+      department: "Networks",
+      status: "Active",
+    },
+    {
+      id: "2",
+      name: "Dr. David Wilson",
+      email: "david.wilson@usthb.edu",
+      department: "Artificial Intelligence",
+      status: "Active",
     },
   ]
 
@@ -93,9 +118,9 @@ export function ManageUsers() {
     const matchesSearch =
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.department.toLowerCase().includes(searchQuery.toLowerCase())
+      (user.department && user.department.toLowerCase().includes(searchQuery.toLowerCase()))
 
-    const matchesRole = selectedRole === "all" || user.role.toLowerCase() === selectedRole.toLowerCase()
+    const matchesRole = selectedRole === "all" || user.role === selectedRole
 
     const matchesStatus = selectedStatus === "all" || user.status.toLowerCase() === selectedStatus.toLowerCase()
 
@@ -117,59 +142,108 @@ export function ManageUsers() {
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
               <DialogDescription>
-                Create a new user account. They will receive an email with login instructions.
+                Create a new user account or create an account for an existing professor.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="John" />
+
+            <Tabs defaultValue="new" onValueChange={(value) => setCreateUserType(value as "new" | "professor")}>
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="new">New User</TabsTrigger>
+                <TabsTrigger value="professor">Existing Professor</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="new">
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input id="firstName" placeholder="John" />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input id="lastName" placeholder="Smith" />
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="john.smith@usthb.edu" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="department">Department</Label>
+                      <Select>
+                        <SelectTrigger id="department">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="computer-science">Computer Science</SelectItem>
+                          <SelectItem value="software-engineering">Software Engineering</SelectItem>
+                          <SelectItem value="networks">Networks</SelectItem>
+                          <SelectItem value="administration">Administration</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="role">Role</Label>
+                      <Select defaultValue="admin">
+                        <SelectTrigger id="role">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch id="sendEmail" defaultChecked />
+                    <Label htmlFor="sendEmail">Send welcome email with login instructions</Label>
+                  </div>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Smith" />
+              </TabsContent>
+
+              <TabsContent value="professor">
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="professor">Select Professor</Label>
+                    <Select>
+                      <SelectTrigger id="professor">
+                        <SelectValue placeholder="Select professor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {professorsWithoutAccounts.map((professor) => (
+                          <SelectItem key={professor.id} value={professor.id}>
+                            {professor.name} - {professor.department}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-sm text-muted-foreground">
+                      Only professors without user accounts are shown in this list.
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="role">Role</Label>
+                    <Select defaultValue="professor">
+                      <SelectTrigger id="role">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="professor">Professor</SelectItem>
+                        <SelectItem value="both">Both (Admin & Professor)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch id="sendEmail" defaultChecked />
+                    <Label htmlFor="sendEmail">Send welcome email with login instructions</Label>
+                  </div>
                 </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="john.smith@usthb.edu" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="department">Department</Label>
-                  <Select>
-                    <SelectTrigger id="department">
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="computer-science">Computer Science</SelectItem>
-                      <SelectItem value="software-engineering">Software Engineering</SelectItem>
-                      <SelectItem value="networks">Networks</SelectItem>
-                      <SelectItem value="administration">Administration</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Select defaultValue="professor">
-                    <SelectTrigger id="role">
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="professor">Professor</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="sendEmail" defaultChecked />
-                <Label htmlFor="sendEmail">Send welcome email with login instructions</Label>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
+
             <DialogFooter>
-              <Button type="submit">Create User</Button>
+              <Button type="submit">{createUserType === "new" ? "Create User" : "Create Account for Professor"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -201,6 +275,7 @@ export function ManageUsers() {
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="professor">Professor</SelectItem>
+                  <SelectItem value="both">Both</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -229,6 +304,7 @@ export function ManageUsers() {
                   <TableHead>User</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
+                  <TableHead>Linked Professor</TableHead>
                   <TableHead>Department</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Last Login</TableHead>
@@ -238,7 +314,7 @@ export function ManageUsers() {
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                       No users found matching your search criteria
                     </TableCell>
                   </TableRow>
@@ -259,11 +335,24 @@ export function ManageUsers() {
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
                         <Badge
-                          variant={user.role === "Admin" ? "default" : "outline"}
-                          className={user.role === "Admin" ? "bg-primary-usthb" : ""}
+                          variant={user.role !== "professor" ? "default" : "outline"}
+                          className={
+                            user.role === "admin" ? "bg-primary-usthb" : user.role === "both" ? "bg-purple-600" : ""
+                          }
                         >
-                          {user.role}
+                          {user.role === "admin"
+                            ? "Admin"
+                            : user.role === "professor"
+                              ? "Professor"
+                              : "Admin & Professor"}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {user.linkedProfessor ? (
+                          <span>{user.linkedProfessor}</span>
+                        ) : (
+                          <span className="text-muted-foreground">None</span>
+                        )}
                       </TableCell>
                       <TableCell>{user.department}</TableCell>
                       <TableCell>

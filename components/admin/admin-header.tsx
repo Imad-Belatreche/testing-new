@@ -18,10 +18,13 @@ import { Bell, LogOut, Menu, MessageSquare, Settings, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { AdminSidebar } from "./admin-sidebar"
+import { RoleSwitcher } from "@/components/role-switcher"
+import { useRole } from "@/components/role-context"
 
 export function AdminHeader() {
   const router = useRouter()
   const [notifications, setNotifications] = useState(3)
+  const { userRole, activeRole, setActiveRole } = useRole()
 
   const handleLogout = () => {
     // In a real app, you would handle logout logic here
@@ -52,6 +55,9 @@ export function AdminHeader() {
       <div className="flex-1"></div>
 
       <div className="flex items-center gap-4">
+        {/* Role Switcher */}
+        <RoleSwitcher userRole={userRole} activeRole={activeRole} onRoleChange={setActiveRole} />
+
         <Button variant="outline" size="icon" className="relative">
           <Bell className="h-5 w-5" />
           {notifications > 0 && (
